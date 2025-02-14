@@ -11,12 +11,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public String registerUser() {
-        return "User registered";
+        return "UserEntity registered";
     }
 
     @GetMapping("/logout")
     public String logout() {
         return "Logout";
     }
+
+
 
 }

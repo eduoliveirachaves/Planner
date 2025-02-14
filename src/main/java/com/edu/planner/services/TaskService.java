@@ -1,9 +1,9 @@
 package com.edu.planner.services;
 
-import com.edu.planner.models.Task;
+import com.edu.planner.entity.TaskEntity;
 import com.edu.planner.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
-import com.edu.planner.models.Task.Status;
+import com.edu.planner.entity.TaskEntity.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,48 +18,48 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public Task createTask(Task task) {
-        return taskRepository.save(task);
+    public TaskEntity createTask(TaskEntity taskEntity) {
+        return taskRepository.save(taskEntity);
     }
 
-    public List<Task> getAllTasks() {
+    public List<TaskEntity> getAllTasks() {
         return taskRepository.findAll();
     }
 
-    public Task getTaskById(long id) {
+    public TaskEntity getTaskById(long id) {
         return taskRepository.findById(id);
     }
 
-    public List<Task> getTaskByStatus(String status) {
+    public List<TaskEntity> getTaskByStatus(String status) {
 
         return taskRepository.findByStatus(Status.PENDING);
     }
 
 
-    public Task updateTaskStatus(long id) {
-        Task task = taskRepository.findById(id);
-        if (task == null) {
-            throw new RuntimeException("Task not found");
+    public TaskEntity updateTaskStatus(long id) {
+        TaskEntity taskEntity = taskRepository.findById(id);
+        if (taskEntity == null) {
+            throw new RuntimeException("TaskEntity not found");
         }
 
-        if (task.getStatus().equals(Status.PENDING)) {
-            task.setStatus(Status.COMPLETED);
+        if (taskEntity.getStatus().equals(Status.PENDING)) {
+            taskEntity.setStatus(Status.COMPLETED);
         } else {
-            task.setStatus(Status.PENDING);
+            taskEntity.setStatus(Status.PENDING);
         }
 
-        return taskRepository.save(task);
+        return taskRepository.save(taskEntity);
     }
 
-    public Task updateTask(long id, String title, String description, LocalDateTime dueDate) {
-        Task t = taskRepository.findById(id);
+    public TaskEntity updateTask(long id, String title, String description, LocalDateTime dueDate) {
+        TaskEntity t = taskRepository.findById(id);
         t.setTitle(title);
         t.setDescription(description);
 
         return taskRepository.save(t);
     }
 
-    public Task deleteTask(long id) {
+    public TaskEntity deleteTask(long id) {
         return taskRepository.deleteById(id);
     }
 
