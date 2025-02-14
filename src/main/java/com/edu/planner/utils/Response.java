@@ -2,31 +2,45 @@ package com.edu.planner.utils;
 
 public class Response {
 
-    private String message;
-    private Object data;
+    private final String message;
+
+    private final Object data;
+
+    private final boolean sucessful;
+
+
+    public Response(String message, Object data, boolean sucessful) {
+        this.message = message;
+        this.data = data;
+        this.sucessful = sucessful;
+    }
+
 
     public Response(String message, Object data) {
         this.message = message;
         this.data = data;
+        this.sucessful = true;
     }
+
 
     public Response(String message) {
         this.message = message;
+        this.data = null;
+        this.sucessful = false;
     }
+
 
     public String getMessage() {
         return message;
     }
 
+
     public Object getData() {
         return data;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
 
-    public void setData(Object data) {
-        this.data = data;
+    public boolean isSucessful() {
+        return sucessful;
     }
 }

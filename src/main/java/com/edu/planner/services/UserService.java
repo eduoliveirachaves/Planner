@@ -1,15 +1,15 @@
 package com.edu.planner.services;
 
-import com.edu.planner.models.UserRequest;
 import com.edu.planner.entity.UserEntity;
+import com.edu.planner.exceptions.UserNotFoundException;
+import com.edu.planner.models.UserRequest;
 import com.edu.planner.models.UserResponse;
 import com.edu.planner.repositories.UserRepository;
-import com.edu.planner.utils.Response;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
+
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -17,78 +17,63 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<Response> createUser(UserRequest userRequest) {
+
+    public UserResponse createUser(UserRequest userRequest) {
         UserEntity userEntity = new UserEntity(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword());
 
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new Response("User already exists"));
+        if (isUserExists(userRequest.getEmail())) {
+            throw new RuntimeException("User already exists");
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new Response("User created", new UserResponse(userRepository.save(userEntity))));
+        return new UserResponse(userRepository.save(userEntity));
     }
 
-    public ResponseEntity<Response> getAllUsers() {
+
+    public List<UserResponse> getAllUsers() {
         if (userRepository.findAll().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Response("No users found"));
+            throw new RuntimeException("No users found");
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response("Users found", userRepository.findAll()
-                        .stream()
-                        .map(UserResponse::new).
-                        toList()));
+
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponse::new).
+                toList();
     }
 
-    public ResponseEntity<Response> getUserById(long id) {
-        if (!userRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Response("User not found"));
-        }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response("User found", new UserResponse(userRepository.findById(id))));
+
+    public UserResponse getUserById(long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        return new UserResponse(user);
     }
 
-    public ResponseEntity<Response> updateUser(long id, UserRequest userRequest) {
 
-        if (!userRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Response("User not found"));
-        }
+    public UserResponse updateUser(long id, UserRequest userRequest) {
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
-        UserEntity userEntity = userRepository.findById(id);
         userEntity.setFirstName(userRequest.getFirstName());
         userEntity.setLastName(userRequest.getLastName());
         userEntity.setEmail(userRequest.getEmail());
         userEntity.setPassword(userRequest.getPassword());
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response("User updated", new UserResponse(userRepository.save(userEntity))));
-    }
 
-    public UserEntity deleteUser(long id) {
-        return userRepository.deleteById(id);
-    }
-
-    public boolean isUserExists(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    public boolean isUserExists(long id) {
-        return userRepository.existsById(id);
+        return new UserResponse(userRepository.save(userEntity));
     }
 
 
-    public ResponseEntity<Response> patchUser(Long id, Map<String, Object> updates) {
-        if (!userRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Response("User not exists"));
-        }
+    public UserResponse deleteUser(long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        userRepository.deleteById(id);
+        return new UserResponse(user);
+    }
 
-        UserEntity user = userRepository.findById(id);
+
+    public UserResponse patchUser(Long id, Map<String, Object> updates) {
+        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         updates.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(UserEntity.class, key);
@@ -98,7 +83,17 @@ public class UserService {
             }
         });
 
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("User updated",userRepository.save(user)));
+        return new UserResponse(userRepository.save(user));
+    }
+
+
+    public boolean isUserExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+
+    public boolean isUserExists(long id) {
+        return userRepository.existsById(id);
     }
 
 }
