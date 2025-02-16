@@ -1,7 +1,7 @@
 package com.edu.planner.controllers;
 
-import com.edu.planner.models.UserRequest;
-import com.edu.planner.models.UserResponse;
+import com.edu.planner.dto.user.UserRequest;
+import com.edu.planner.dto.user.UserResponse;
 import com.edu.planner.services.UserService;
 import com.edu.planner.utils.Response;
 import jakarta.validation.Valid;
@@ -34,7 +34,7 @@ public class UserController {
 
     //ok
     @GetMapping("{id}")
-    public ResponseEntity<Response> user(@PathVariable long id) {
+    public ResponseEntity<Response> getUser(@PathVariable long id) {
         return ResponseEntity.status(HttpStatus.OK).body(new Response("User found", userService.getUserById(id)));
     }
 

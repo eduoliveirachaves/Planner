@@ -1,20 +1,26 @@
 package com.edu.planner.entity;
 
+import com.edu.planner.dto.task.Task;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
+@Getter
+@Setter
 @Entity
 @Table(name = "tasks")
 public class TaskEntity {
-    @Column(name = "created_at", updatable = false)
-    private final LocalDateTime createdAt = LocalDateTime.now();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -23,7 +29,7 @@ public class TaskEntity {
     private String description;
 
     @Column(name = "due_date")
-    private Date dueDate;
+    private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -33,10 +39,12 @@ public class TaskEntity {
     @JoinColumn(name = "owner_id", nullable = false)
     private UserEntity owner;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
 
@@ -44,18 +52,17 @@ public class TaskEntity {
     }
 
 
-    public TaskEntity(String title, String description, Date dueDate, UserEntity ownerId) {
+    public TaskEntity(String title, String description, LocalDate dueDate, UserEntity owner) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
+        this.owner = owner;
     }
 
-
-    public TaskEntity(String title, String description, Date dueDate, UserEntity ownerId, Status status) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.status = status;
+    public TaskEntity(Task task) {
+        this.title = task.getTitle();
+        this.description = task.getDescription();
+        this.dueDate = task.getDueDate();
     }
 
 
@@ -84,7 +91,7 @@ public class TaskEntity {
     }
 
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
@@ -101,16 +108,6 @@ public class TaskEntity {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
-    }
-
-
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
     }
 
 

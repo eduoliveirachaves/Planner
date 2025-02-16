@@ -1,4 +1,4 @@
-package com.edu.planner.models;
+package com.edu.planner.dto.user;
 
 import com.edu.planner.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;

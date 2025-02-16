@@ -1,0 +1,4 @@
+tenho que ver se o update timestamp funciona
+
+circular problems // spring @Lazy annotation
+

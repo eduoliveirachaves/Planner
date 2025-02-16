@@ -1,6 +1,9 @@
 package com.edu.planner.services;
 
 import com.edu.planner.entity.TaskEntity;
+import com.edu.planner.entity.UserEntity;
+import com.edu.planner.exceptions.TaskNotFoundException;
+import com.edu.planner.dto.task.Task;
 import com.edu.planner.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
 import com.edu.planner.entity.TaskEntity.Status;
@@ -14,11 +17,20 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskService(TaskRepository taskRepository) {
+    private final UserService userService;
+
+
+    public TaskService(TaskRepository taskRepository, UserService userService) {
         this.taskRepository = taskRepository;
+        this.userService = userService;
     }
 
-    public TaskEntity createTask(TaskEntity taskEntity) {
+    public TaskEntity createTask(Task task, UserEntity user) {
+        if (user == null) {
+            throw new RuntimeException("ERROR IS HERE - User not found");
+        }
+        TaskEntity taskEntity = new TaskEntity(task);
+        taskEntity.setOwner(user);
         return taskRepository.save(taskEntity);
     }
 
@@ -26,18 +38,17 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public TaskEntity getTaskById(long id) {
-        return taskRepository.findById(id);
+    public TaskEntity getTaskById(Long id) {
+        return taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
     }
 
-    public List<TaskEntity> getTaskByStatus(String status) {
-
-        return taskRepository.findByStatus(Status.PENDING);
+    public List<TaskEntity> getTaskByStatus(Status status) {
+        return taskRepository.findByStatus(status);
     }
 
 
     public TaskEntity updateTaskStatus(long id) {
-        TaskEntity taskEntity = taskRepository.findById(id);
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         if (taskEntity == null) {
             throw new RuntimeException("TaskEntity not found");
         }
@@ -52,7 +63,7 @@ public class TaskService {
     }
 
     public TaskEntity updateTask(long id, String title, String description, LocalDateTime dueDate) {
-        TaskEntity t = taskRepository.findById(id);
+        TaskEntity t = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         t.setTitle(title);
         t.setDescription(description);
 
@@ -60,7 +71,9 @@ public class TaskService {
     }
 
     public TaskEntity deleteTask(long id) {
-        return taskRepository.deleteById(id);
+        TaskEntity t = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        taskRepository.deleteById(id);
+        return t;
     }
 
 

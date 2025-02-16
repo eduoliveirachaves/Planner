@@ -1,4 +1,4 @@
-package com.edu.planner.models;
+package com.edu.planner.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
