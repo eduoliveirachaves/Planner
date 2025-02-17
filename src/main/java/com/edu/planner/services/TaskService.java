@@ -4,12 +4,13 @@ import com.edu.planner.entity.TaskEntity;
 import com.edu.planner.entity.UserEntity;
 import com.edu.planner.exceptions.TaskNotFoundException;
 import com.edu.planner.dto.task.Task;
+import com.edu.planner.exceptions.UserNotFoundException;
 import com.edu.planner.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
 import com.edu.planner.entity.TaskEntity.Status;
-
-import java.time.LocalDateTime;
+import com.edu.planner.mapper.TaskMapper;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -17,38 +18,47 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    private final UserService userService;
-
-
-    public TaskService(TaskRepository taskRepository, UserService userService) {
+    public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.userService = userService;
     }
 
-    public TaskEntity createTask(Task task, UserEntity user) {
+    public Task createTask(Task task, UserEntity user) {
+        System.out.println("user: " + user);
+        System.out.println("task: " + task);
+
         if (user == null) {
-            throw new RuntimeException("ERROR IS HERE - User not found");
+            throw new UserNotFoundException();
         }
-        TaskEntity taskEntity = new TaskEntity(task);
-        taskEntity.setOwner(user);
-        return taskRepository.save(taskEntity);
+
+        TaskEntity taskEntity = TaskMapper.toEntity(task, user);
+        taskRepository.save(taskEntity);
+        return TaskMapper.toDto(taskEntity);
     }
 
-    public List<TaskEntity> getAllTasks() {
-        return taskRepository.findAll();
+    public List<Task> getUserTasks(UserEntity user) {
+        return taskRepository.findAllByOwner(user).stream().map(TaskMapper::toDto).toList();
     }
 
-    public TaskEntity getTaskById(Long id) {
-        return taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+    //    for admin to get all tasks - to be implemented
+//    public List<TaskEntity> getAllTasks() {
+//        return taskRepository.findAll();
+//    }
+
+    public Task getTaskById(Long id, UserEntity user) {
+        return TaskMapper.toDto(taskRepository.findByIdAndOwner(id, user).orElseThrow(TaskNotFoundException::new));
     }
 
-    public List<TaskEntity> getTaskByStatus(Status status) {
-        return taskRepository.findByStatus(status);
+    public List<Task> getTaskByStatus(UserEntity user, String status) {
+        System.out.println("status: " + status);
+        if (!Objects.equals(status, "PENDING") && !Objects.equals(status, "COMPLETED" )) {
+            throw new RuntimeException("Invalid status");
+        }
+        return taskRepository.findAllByOwnerAndStatus(user, Status.valueOf(status)).stream().map(TaskMapper::toDto).toList();
     }
 
 
-    public TaskEntity updateTaskStatus(long id) {
-        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+    public Task updateTaskStatus(Long id, UserEntity user) {
+        TaskEntity taskEntity = taskRepository.findByIdAndOwner(id, user).orElseThrow(TaskNotFoundException::new);
         if (taskEntity == null) {
             throw new RuntimeException("TaskEntity not found");
         }
@@ -59,23 +69,25 @@ public class TaskService {
             taskEntity.setStatus(Status.PENDING);
         }
 
-        return taskRepository.save(taskEntity);
+        return TaskMapper.toDto(taskRepository.save(taskEntity));
     }
 
-    public TaskEntity updateTask(long id, String title, String description, LocalDateTime dueDate) {
-        TaskEntity t = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
-        t.setTitle(title);
-        t.setDescription(description);
+    public Task updateTask(Long id, Task task, UserEntity user) {
+        TaskEntity t = taskRepository.findByIdAndOwner(id, user).orElseThrow(TaskNotFoundException::new);
 
-        return taskRepository.save(t);
+        t.setTitle(task.getTitle());
+        t.setDescription(task.getDescription());
+        t.setDueDate(task.getDueDate());
+
+        return TaskMapper.toDto(taskRepository.save(t));
     }
 
-    public TaskEntity deleteTask(long id) {
+
+
+    public Task deleteTask(long id) {
         TaskEntity t = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         taskRepository.deleteById(id);
-        return t;
+        return TaskMapper.toDto(t);
     }
-
-
 
 }

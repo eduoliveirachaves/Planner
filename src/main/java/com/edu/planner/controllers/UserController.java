@@ -1,12 +1,15 @@
 package com.edu.planner.controllers;
 
+import com.edu.planner.annotations.CurrentUser;
 import com.edu.planner.dto.user.UserRequest;
 import com.edu.planner.dto.user.UserResponse;
+import com.edu.planner.entity.UserEntity;
 import com.edu.planner.services.UserService;
 import com.edu.planner.utils.Response;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +29,15 @@ public class UserController {
 
 
     //just a test
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<String> user() {
         return new ResponseEntity<>("Hello", HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Response> me(@CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK).body(new Response("User found", user));
     }
 
 
@@ -40,6 +49,7 @@ public class UserController {
 
 
     //ok
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<Response> allUsers() {
         List<UserResponse> users = userService.getAllUsers();
@@ -48,8 +58,8 @@ public class UserController {
 
 
     //ok
-    @PostMapping
-    public ResponseEntity<Response> createUser(@Valid @RequestBody UserRequest userRequest) {
+    @PostMapping("/register")
+    public ResponseEntity<Response> registerUser(@Valid @RequestBody UserRequest userRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response("User Created", userService.createUser(userRequest)));
     }
 

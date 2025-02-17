@@ -1,13 +1,13 @@
 package com.edu.planner.entity;
 
-import com.edu.planner.dto.task.Task;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -22,10 +22,10 @@ public class TaskEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @Column(length = 500)
+    @Column(name = "description", length = 500)
     private String description;
 
     @Column(name = "due_date")
@@ -57,12 +57,6 @@ public class TaskEntity {
         this.description = description;
         this.dueDate = dueDate;
         this.owner = owner;
-    }
-
-    public TaskEntity(Task task) {
-        this.title = task.getTitle();
-        this.description = task.getDescription();
-        this.dueDate = task.getDueDate();
     }
 
 

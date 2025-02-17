@@ -1,5 +1,6 @@
-package com.edu.planner.auth;
+package com.edu.planner.controllers;
 
+import com.edu.planner.services.AuthService;
 import com.edu.planner.dto.user.UserCredentials;
 import com.edu.planner.utils.Response;
 import jakarta.validation.Valid;

@@ -4,16 +4,16 @@ import java.time.LocalDate;
 
 public class Task {
 
-    private String title;
+    private final String title;
 
-    private String description;
+    private final String description;
 
-    private LocalDate dueDate;
+    private final LocalDate dueDate;
 
-    private Status status;
+    private String status;
 
-    public Task() {
-    }
+    private String owner;
+
 
     public Task(String title, String description, LocalDate dueDate) {
         this.title = title;
@@ -21,33 +21,41 @@ public class Task {
         this.dueDate = dueDate;
     }
 
+
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public LocalDate getDueDate() {
         return dueDate;
     }
 
-    public Status getStatus() {
+
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+
+    public void setStatus(String status) {
         this.status = status;
     }
+
+
+    public String getOwner() {
+        return owner;
+    }
+
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
 
     public enum Status {
         PENDING,
