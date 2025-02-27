@@ -1,19 +1,22 @@
 package com.edu.planner.controllers;
 
-import com.edu.planner.services.AuthService;
 import com.edu.planner.dto.user.UserCredentials;
+import com.edu.planner.services.AuthService;
 import com.edu.planner.utils.Response;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+/*
+    * AuthController class
+    * RestController that handles authentication requests
+    * Used to login, logout and allow check if the user is authenticated
+*/
+
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -23,10 +26,25 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<Response> check() {
+        return ResponseEntity.status(200).body(new Response("User authenticated", null, true));
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<Response> login(@Valid @RequestBody UserCredentials userCredentials) {
-        return ResponseEntity.status(200).body(new Response("User authenticated", Collections.singletonMap("token", authService.login(userCredentials))));
+    public ResponseEntity<Response> login(@Valid @RequestBody UserCredentials userCredentials, HttpServletResponse response) {
+        response.addCookie(authService.login(userCredentials));
+        return ResponseEntity.status(200).body(new Response("User authenticated", null, true));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Response> logout(HttpServletResponse response) {
+        response.addCookie(authService.logout());
+        return ResponseEntity.status(200).body(new Response("User logged out", null, true));
+    }
+
+
+
+
 
 }

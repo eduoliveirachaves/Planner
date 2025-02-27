@@ -1,13 +1,10 @@
 package com.edu.planner.dto.user;
 
-import com.edu.planner.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -15,18 +12,17 @@ import java.time.format.DateTimeFormatter;
  * This class is used to create a user response.
  * It contains the user's first name, last name, email, createdAt and updatedAt.
  */
+
+
 @Getter
-@Setter
 @AllArgsConstructor
 public class UserResponse {
 
-    private final String firstName;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-    private final String lastName;
+    private final String name;
 
     private final String email;
-
-    private final String role;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", locale = "pt-BR")
     private String createdAt;
@@ -34,32 +30,11 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", locale = "pt-BR")
     private String updatedAt;
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-
-    public UserResponse(String firstName, String lastName, String email, String role) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public UserResponse(String name, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.name = name;
         this.email = email;
-        this.role = role;
+        this.createdAt = createdAt.format(FORMATTER);
+        this.updatedAt = updatedAt.format(FORMATTER);
     }
-
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-
-    public String getRole() {
-        return role;
-    }
-
 }

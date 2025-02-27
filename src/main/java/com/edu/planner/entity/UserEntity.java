@@ -1,6 +1,13 @@
 package com.edu.planner.entity;
 
+import com.edu.planner.utils.Enums.Gender;
+import com.edu.planner.utils.Enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,31 +17,50 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-
+@Getter
+@Setter
 @Entity
+@AllArgsConstructor
 @Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "first_name", nullable = false, length = 50)
-    private String firstName;
+    @Column(nullable = false, length = 70)
+    private String name;
 
-    @Column(name = "last_name", nullable = false, length = 50)
-    private String lastName;
+    @Column(length = 50, unique = true)
+    private String username;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 100)
+    @Column(nullable = false, length = 100)
     private String password;
 
+    @Min(12)
+    @Max(100)
+    private Integer age;
+
+    // in cm
+    @Min(100)
+    @Max(250)
+    private Integer height;
+
+    // in kg
+    @Min(30)
+    @Max(200)
+    private Integer weight;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 50)
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private Role role;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -47,83 +73,46 @@ public class UserEntity {
     }
 
 
-    public UserEntity(String firstName, String lastName, String email, String password, Role role) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public UserEntity(String name, String email, String password, Role role) {
+        this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
     }
+
+
+    public UserEntity(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = Role.USER;
+    }
+
+
+    public UserEntity(String name, String username, String email, String password, Role role) {
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
 
     public List<GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
 
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-
-    public String getLastName() {
-        return lastName;
-    }
-
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    public String getPassword() {
-        return password;
-    }
-
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-
-    public LocalDateTime getUpdatedAt() {
-        return createdAt;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-
-    public enum Role {
-        ADMIN,
-        USER
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                ", height=" + height +
+                ", weight=" + weight + "}";
     }
 }

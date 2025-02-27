@@ -12,8 +12,8 @@ public class TaskMapper {
 
     public static Task toDto(TaskEntity taskEntity) {
         Task task = new Task(taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getDueDate());
-        task.setStatus(String.valueOf(taskEntity.getStatus()));
-        task.setOwner(taskEntity.getOwner().getFirstName());
+        task.setStatus(taskEntity.getStatus());
+        task.setOwner(taskEntity.getOwner().getName());
         return task;
     }
 }

@@ -1,5 +1,15 @@
 package com.edu.planner.utils;
 
+import lombok.Getter;
+
+/**
+ * Response class.
+ * This class is used to create a response.
+ * It contains a message, data and a boolean to check if the response was successful.
+ * Used by the controllers to return a response to the client.
+ */
+
+@Getter
 public class Response {
 
     private final String message;
@@ -29,18 +39,4 @@ public class Response {
         this.sucessful = false;
     }
 
-
-    public String getMessage() {
-        return message;
-    }
-
-
-    public Object getData() {
-        return data;
-    }
-
-
-    public boolean isSucessful() {
-        return sucessful;
-    }
 }

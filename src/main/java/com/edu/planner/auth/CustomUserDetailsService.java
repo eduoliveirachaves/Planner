@@ -1,11 +1,16 @@
 package com.edu.planner.auth;
 
-import com.edu.planner.entity.UserEntity;
 import com.edu.planner.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+/*
+    * CustomUserDetailsService class that implements UserDetailsService interface
+    * This class is used to load user by username (email or username)
+    * Used in WebSecurityConfig to load user by username
+ */
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -17,15 +22,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new CustomUserDetails(user); // Return CustomUserDetails
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Default method to load user by username (email or username)
+        return userRepository.findByEmail(username)
+                .map(CustomUserDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
-    public UserDetails loadUserById(long id) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new CustomUserDetails(user); // Return CustomUserDetails
+    public UserDetails loadUserById(Long userId) {
+        return userRepository.findById(userId)
+                .map(CustomUserDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
     }
 }

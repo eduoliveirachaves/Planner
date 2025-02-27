@@ -1,4 +1,46 @@
-tenho que ver se o update timestamp funciona
+          *Problems*
+
+Tenho que ver se o update timestamp funciona
 
 circular problems // spring @Lazy annotation
+
+           *Problems*
+
+            *App*
+
+meu app e um planner logo eu tenho que ter um conjunto de tarefas = rotina = tasks
+estudos que conteria materias e horas estudadas / distribuidor de horas de estudo / registro de horas estudadas por dia / registro de projetos
+academia que conteria exercicios e horas de treino / distribuidor de horas de treino / registro de horas de treino por dia / registro de projetos == hevy com o grafico do stronger se eu conseguir copiar / registro de peso e medida
+financeiro que conteria gastos e ganhos / gastos planejados / planejar possiveis gastos / planejar possiveis ganhos / registro de gastos por dia / registro de ganhos por dia
+um feedback diario como um diario
+
+            *App*
+
+            *User*
+
+nome completo
+username
+email
+senha
+idade = opcional
+sexo = opcional
+depois do app de academia sera mais util
+peso = opcional /
+altura = opcional
+
+            *User*
+
+            *Task*
+
+titulo
+descricao
+data de inicio = opcional (pode ser inserido pra comecar depois) // se nao tiver data de inicio ele comeca no dia que foi criado
+data de fim = opcional pode ser inserido pra terminar ou nao
+estado = pendente por padrao
+frequencia = diario, semanal, mensal, anual e customizado
+prioridade = 0 a 5
+categoria = trabalho, lazer, saude, estudo, familia, relacionamento, financeiro, espiritual, social, emocional, fisico, mental, profissional, pessoal, esportivo
+meta/expecativa = opcional (como horas ou quantidade)
+
+            *Task*
 

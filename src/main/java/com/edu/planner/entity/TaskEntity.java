@@ -1,8 +1,10 @@
 package com.edu.planner.entity;
 
+import com.edu.planner.utils.Enums.Status;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,10 +12,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class TaskEntity {
@@ -22,11 +25,14 @@ public class TaskEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 100)
+    @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(name = "description", length = 500)
+    @Column(length = 500)
     private String description;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
     @Column(name = "due_date")
     private LocalDate dueDate;
@@ -35,8 +41,22 @@ public class TaskEntity {
     @Column(nullable = false)
     private Status status = Status.PENDING;
 
+    @ElementCollection
+    private List<LocalDateTime> frequency;
+
+    @Min(1)
+    @Max(5)
+    private Integer priority;
+
+    private String category;
+
+    //can be time or score
+    private String type;
+
+    private Integer objective;
+
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(nullable = false)
     private UserEntity owner;
 
     @Column(name = "created_at")
@@ -59,63 +79,23 @@ public class TaskEntity {
         this.owner = owner;
     }
 
-
-    public long getId() {
-        return id;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-
-    public Status getStatus() {
-        return status;
-    }
-
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-
-    public enum Status {
-        PENDING, COMPLETED
+    @Override
+    public String toString() {
+        return "TaskEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", startDate=" + startDate +
+                ", dueDate=" + dueDate +
+                ", status=" + status +
+                ", frequency=" + frequency +
+                ", priority=" + priority +
+                ", category='" + category + '\'' +
+                ", type='" + type + '\'' +
+                ", score=" + objective +
+                ", owner=" + owner +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

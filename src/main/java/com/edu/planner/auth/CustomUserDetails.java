@@ -3,8 +3,14 @@ package com.edu.planner.auth;
 import com.edu.planner.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
-import java.util.List;
+
+/*
+    * CustomUserDetails class that implements UserDetails interface
+    * This class is used to store the full UserEntity object
+    * Used in CustomUserDetailsService to return the full UserEntity object
+ */
 
 public class CustomUserDetails implements UserDetails {
 
@@ -27,8 +33,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(user.getAuthorities().toArray(new GrantedAuthority[0]));
+        return user.getAuthorities();
     }
+
+
 
 
     @Override

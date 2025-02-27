@@ -9,10 +9,15 @@ public class UserMapper {
     }
 
     public static UserResponse toUserResponse(UserEntity user) {
-        return new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), String.valueOf(user.getRole()));
+        return new UserResponse(user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
     }
 
+
     public static UserEntity toUserEntity(UserRequest userRequest) {
-        return new UserEntity(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getRole());
+        //caso tenha role, cria um novo usuário com role ( ADMIN ) se nao ROLE == USER
+        return (userRequest.getRole() != null)
+                ? new UserEntity(userRequest.getName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getRole())
+                : new UserEntity(userRequest.getName(), userRequest.getEmail(), userRequest.getPassword());
     }
+
 }

@@ -7,6 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
+/*
+    * WebMvcConfig class that implements WebMvcConfigurer interface
+    * This class is used to add the CurrentUserArgumentResolver to the list of argument resolvers
+    * Used in controllers to get the current user
+ */
+
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 

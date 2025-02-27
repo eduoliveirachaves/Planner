@@ -1,6 +1,5 @@
 package com.edu.planner.services;
 
-import com.edu.planner.auth.CustomUserDetails;
 import com.edu.planner.auth.JwtService;
 import com.edu.planner.dto.user.UserRequest;
 import com.edu.planner.dto.user.UserResponse;
@@ -8,9 +7,6 @@ import com.edu.planner.entity.UserEntity;
 import com.edu.planner.exceptions.UserNotFoundException;
 import com.edu.planner.mapper.UserMapper;
 import com.edu.planner.repositories.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -18,9 +14,17 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
+/**
+ * UserService class.
+ * This class is used to manage users.
+ * It provides methods to create, update, delete, and retrieve users.
+ * Used by the UserController.
+ */
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
 
@@ -34,6 +38,10 @@ public class UserService implements UserDetailsService {
 
 
     public UserResponse createUser(UserRequest userRequest) {
+        if (userRequest.getEmail() == null || userRequest.getPassword() == null || userRequest.getName() == null) {
+            throw new RuntimeException("Email, password and name are required");
+        }
+
         if (isUserExists(userRequest.getEmail())) {
             throw new RuntimeException("User already exists");
         }
@@ -43,6 +51,11 @@ public class UserService implements UserDetailsService {
         userRequest.setPassword(hashedPassword);
 
         return UserMapper.toUserResponse(userRepository.save(UserMapper.toUserEntity(userRequest)));
+    }
+
+
+    public UserResponse getUserById(long id) {
+        return UserMapper.toUserResponse(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
     }
 
 
@@ -58,40 +71,39 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserResponse getUserById(long id) {
-        return UserMapper.toUserResponse(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
-    }
-
-
-    //old method
+    //can be useful for admin only
     public UserEntity getUser(long id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
 
-    public UserResponse updateUser(long id, UserRequest userRequest) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-
-        userEntity.setFirstName(userRequest.getFirstName());
-        userEntity.setLastName(userRequest.getLastName());
+    public UserResponse updateUser(UserEntity userEntity, UserRequest userRequest) {
+        userEntity.setName(userRequest.getName());
         userEntity.setEmail(userRequest.getEmail());
         userEntity.setPassword(userRequest.getPassword());
+        userEntity.setAge(userRequest.getAge());
+        userEntity.setHeight(userRequest.getHeight());
+        userEntity.setWeight(userRequest.getWeight());
+        userEntity.setGender(userRequest.getGender());
 
         return UserMapper.toUserResponse(userRepository.save(userEntity));
     }
 
 
-    public UserResponse deleteUser(long id) {
-        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        userRepository.deleteById(id);
-        return UserMapper.toUserResponse(user);
+    public String updateUserPassword(UserEntity userEntity, String password) {
+        userEntity.setPassword(jwtService.getHashedPassword(password));
+        userRepository.save(userEntity);
+        return "Password updated successfully";
     }
 
 
-    public UserResponse patchUser(Long id, Map<String, Object> updates) {
-        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-
+    //patch user - update only the fields that are provided // NOT PATCHING PASSWORD
+    public UserResponse patchUser(UserEntity user, Map<String, Object> updates) {
+        Set<String> allowedUpdates = Set.of("name", "email", "age", "height", "weight", "gender");
         updates.forEach((key, value) -> {
+            if (!allowedUpdates.contains(key)) {
+                throw new RuntimeException("Invalid field: " + key);
+            }
             Field field = ReflectionUtils.findField(UserEntity.class, key);
             if (field != null) {
                 field.setAccessible(true);
@@ -101,6 +113,24 @@ public class UserService implements UserDetailsService {
 
         return UserMapper.toUserResponse(userRepository.save(user));
     }
+
+
+    //admin only
+    public UserResponse deleteUser(long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        userRepository.deleteById(id);
+        return UserMapper.toUserResponse(user);
+    }
+
+
+    //auto delete
+    public UserResponse deleteUser(UserEntity user) {
+        userRepository.deleteById(user.getId());
+        return UserMapper.toUserResponse(user);
+    }
+
+
+    //helpers below
 
 
     public boolean isUserExists(String email) {
@@ -118,19 +148,9 @@ public class UserService implements UserDetailsService {
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Default method to load user by username (email or username)
-        return userRepository.findByEmail(username)
-                .map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    //test method
+    public UserEntity getUserByToken(String token) {
+        return userRepository.findById(jwtService.extractUserId(token))
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
-
-
-    public UserDetails loadUserById(Long userId) {
-        return userRepository.findById(userId)
-                .map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
-    }
-
 }

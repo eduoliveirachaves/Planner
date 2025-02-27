@@ -9,6 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * This class is responsible for handling requests related to tasks.
+ * It provides endpoints for creating, updating, deleting, and retrieving tasks.
+ */
+
 @RestController
 @RequestMapping("/task")
 public class TaskController {

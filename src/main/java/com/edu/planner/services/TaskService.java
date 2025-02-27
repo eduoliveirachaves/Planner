@@ -7,11 +7,17 @@ import com.edu.planner.dto.task.Task;
 import com.edu.planner.exceptions.UserNotFoundException;
 import com.edu.planner.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
-import com.edu.planner.entity.TaskEntity.Status;
+import com.edu.planner.utils.Enums.Status;
 import com.edu.planner.mapper.TaskMapper;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * TaskService class.
+ * This class is used to manage tasks.
+ * It provides methods to create, update, delete, and retrieve tasks.
+ * Used by the TaskController.
+ */
 
 @Service
 public class TaskService {
@@ -23,9 +29,6 @@ public class TaskService {
     }
 
     public Task createTask(Task task, UserEntity user) {
-        System.out.println("user: " + user);
-        System.out.println("task: " + task);
-
         if (user == null) {
             throw new UserNotFoundException();
         }
