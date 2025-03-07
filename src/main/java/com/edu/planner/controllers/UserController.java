@@ -6,11 +6,18 @@ import com.edu.planner.dto.user.UserResponse;
 import com.edu.planner.entity.UserEntity;
 import com.edu.planner.services.UserService;
 import com.edu.planner.utils.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +28,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
+@Tag(name = "User Controller", description = "Endpoints for managing users")
 public class UserController {
 
     private final UserService userService;
@@ -31,12 +39,33 @@ public class UserController {
     }
 
 
+    //return the current user - full details
     @GetMapping("/me")
     public ResponseEntity<Response> me(@CurrentUser UserEntity user) {
         return ResponseEntity.status(HttpStatus.OK).body(new Response("User found", user));
     }
 
 
+    @Operation(summary = "Get user profile", description = "Retrieves the profile of the current user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User Found",
+            content = @Content(mediaType = "applicaiton/json",
+            schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @GetMapping("/profile")
+    public ResponseEntity<Response> getProfile(@CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK).body(new Response("User info", userService.getProfile(user)));
+    }
+
+
+    @Operation(summary = "Get a user by ID", description = "Retrieves a user based on the provided ID for admins")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     //ok
     @GetMapping("/admin/{id}")
     public ResponseEntity<Response> getUser(@PathVariable long id) {

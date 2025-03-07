@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.edu")
 @EntityScan(basePackages = "com.edu.planner.entity")
 @EnableJpaRepositories("com.edu.planner.repositories")
 public class PlannerApplication {

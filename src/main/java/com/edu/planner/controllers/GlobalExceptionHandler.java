@@ -3,6 +3,7 @@ package com.edu.planner.controllers;
 import com.edu.planner.exceptions.TaskNotFoundException;
 import com.edu.planner.exceptions.UserNotFoundException;
 import com.edu.planner.utils.Response;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +18,7 @@ import java.util.Map;
  * It provides a way to handle exceptions globally and return a response to the client.
  */
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -40,6 +42,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new Response(e.getMessage()));
     }
+
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Map<String, String>> handleNoResourceFoundException(NoResourceFoundException ex) {

@@ -129,6 +129,12 @@ public class UserService {
         return UserMapper.toUserResponse(user);
     }
 
+    public UserResponse getProfile(UserEntity user) {
+        return UserMapper.toUserResponse(user);
+    }
+
+
+
 
     //helpers below
 

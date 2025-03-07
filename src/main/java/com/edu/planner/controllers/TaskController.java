@@ -5,6 +5,7 @@ import com.edu.planner.dto.task.Task;
 import com.edu.planner.entity.UserEntity;
 import com.edu.planner.services.TaskService;
 import com.edu.planner.utils.Response;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * It provides endpoints for creating, updating, deleting, and retrieving tasks.
  */
 
+@Tag(name = "Task Controller", description = "Endpoints for managing tasks")
 @RestController
 @RequestMapping("/task")
 public class TaskController {

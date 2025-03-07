@@ -3,6 +3,7 @@ package com.edu.planner.controllers;
 import com.edu.planner.dto.user.UserCredentials;
 import com.edu.planner.services.AuthService;
 import com.edu.planner.utils.Response;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
     * Used to login, logout and allow check if the user is authenticated
 */
 
-
+@Tag(name = "Auth Controller", description = "Endpoints for managing authentication")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
