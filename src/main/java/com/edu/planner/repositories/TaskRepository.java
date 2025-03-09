@@ -20,6 +20,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, String> {
 
     List<TaskEntity> findAllByOwner(UserEntity user);
 
+    List<TaskEntity> findAllByOwner_Id(long id);
+
     void deleteById(long id);
 
     List<TaskEntity> findAllByOwnerAndStatus(UserEntity user, Status status);

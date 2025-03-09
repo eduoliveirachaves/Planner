@@ -49,14 +49,21 @@ public class TaskService {
         return taskRepository.findAllByOwner(user).stream().map(TaskMapper::toDto).toList();
     }
 
-    //    for admin to get all tasks - to be implemented
-//    public List<TaskEntity> getAllTasks() {
-//        return taskRepository.findAll();
-//    }
+    public List<TaskEntity> getUserTasks(long id) {
+        return taskRepository.findAllByOwner_Id(id);
+    }
+
+    public List<TaskEntity> getAllTasks() {
+        return taskRepository.findAll();
+    }
 
 
     public TaskResponse getTaskById(Long id, UserEntity user) {
         return TaskMapper.toDto(taskRepository.findByIdAndOwner(id, user).orElseThrow(TaskNotFoundException::new));
+    }
+
+    public TaskEntity getTaskById(Long id) {
+        return taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
     }
 
 

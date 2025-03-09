@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Map<String, String>> handleNoResourceFoundException(NoResourceFoundException ex) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "THIS ROUTE DOESN'T EXIST, YOUR STUPID");
+        errorResponse.put("error", "THIS ROUTE DOESN'T EXIST");
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }

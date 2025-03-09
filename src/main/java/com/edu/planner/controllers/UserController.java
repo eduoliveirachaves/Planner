@@ -14,11 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,28 +56,6 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Get a user by ID", description = "Retrieves a user based on the provided ID for admins")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserResponse.class))),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    //ok
-    @GetMapping("/admin/{id}")
-    public ResponseEntity<Response> getUser(@PathVariable long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("User found", userService.getUserById(id)));
-    }
-
-
-    //ok
-    @GetMapping("/admin/all")
-    public ResponseEntity<Response> allUsers() {
-        List<UserResponse> users = userService.getAllUsers();
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("All " + users.size() + " Users Found", users));
-    }
-
-
     //ok
     @PostMapping("/register")
     public ResponseEntity<Response> registerUser(@RequestBody UserRequest userRequest) {
@@ -89,7 +64,8 @@ public class UserController {
     }
 
 
-    //full update
+    //update full user
+    //need a security check
     @PutMapping
     public ResponseEntity<Response> updateUser(@CurrentUser UserEntity user, @RequestBody UserRequest userRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(new Response("User updated", userService.updateUser(user, userRequest)));
@@ -97,6 +73,7 @@ public class UserController {
 
 
     //for only updating the fields that are provided
+    //need a securirty ckeck
     @PatchMapping
     public ResponseEntity<Response> patchUser(
             @CurrentUser UserEntity user,
@@ -105,29 +82,14 @@ public class UserController {
     }
 
 
-    //ok
-    @DeleteMapping("/admin/{id}")
-    public ResponseEntity<Response> deleteUser(@PathVariable long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("User Deleted", userService.deleteUser(id)));
-    }
-
-
-    //ok
+    //auto delete
     @DeleteMapping
     public ResponseEntity<Response> deleteUser(@CurrentUser UserEntity user) {
         return ResponseEntity.status(HttpStatus.OK).body(new Response("User Deleted", userService.deleteUser(user)));
     }
 
 
-    @GetMapping("/admin/debug-auth")
-    public ResponseEntity<?> debugAuth() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Is Authenticated? " + authentication.isAuthenticated());
-        System.out.println("Principal: " + authentication.getPrincipal());
-        System.out.println("Authorities: " + authentication.getAuthorities());
 
-        return ResponseEntity.ok(authentication);
-    }
 
 
 }

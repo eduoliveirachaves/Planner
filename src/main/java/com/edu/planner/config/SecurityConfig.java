@@ -51,7 +51,7 @@ public class SecurityConfig {
                 //Authorize HTTP requests - Set public routes, admin routes, and protect other endpoints - uses requestMatchers
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ROUTES).permitAll() // Public routes
-                        .requestMatchers("/user/admin/**").hasRole("ADMIN") // Admin routes
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Admin routes
                         .anyRequest().authenticated() // Protect other endpoints
                 )
                 //Session management - Stateless session - No session management

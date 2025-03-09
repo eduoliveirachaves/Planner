@@ -53,12 +53,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response("TaskResponse updated", taskService.updateTask(id, taskResponse, user)));
     }
 
-//    for admin to get all tasks - to be implemented
-    /*
-    @GetMapping("/all")
-    public ResponseEntity<List<TaskEntity>> allTasks(@AuthenticationPrincipal UserEntity user) {
-        return new ResponseEntity<>(taskService.getAllTasks(), HttpStatus.OK);
-    }*/
+
 
 
     @GetMapping("/status")
