@@ -10,7 +10,7 @@ import java.time.LocalDate;
 /**
  * OLD DESCRIPTION
  * This class represents a task.
- * Used in the TaskController to create, update, and retrieve tasks.
+ * Used in the TaskController to send the task back.
  */
 
 

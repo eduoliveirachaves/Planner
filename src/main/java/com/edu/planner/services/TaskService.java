@@ -4,6 +4,7 @@ import com.edu.planner.dto.task.TaskRequest;
 import com.edu.planner.dto.task.TaskResponse;
 import com.edu.planner.entity.TaskEntity;
 import com.edu.planner.entity.UserEntity;
+import com.edu.planner.exceptions.BadRequestException;
 import com.edu.planner.exceptions.TaskNotFoundException;
 import com.edu.planner.exceptions.UserNotFoundException;
 import com.edu.planner.mapper.TaskMapper;
@@ -32,6 +33,7 @@ public class TaskService {
     }
 
 
+    // Create a new task
     public TaskResponse createTask(TaskRequest task, UserEntity user) {
         if (user == null) {
             throw new UserNotFoundException();
@@ -46,15 +48,8 @@ public class TaskService {
 
 
     public List<TaskResponse> getUserTasks(UserEntity user) {
+        // Map the user tasks to TaskResponse objects
         return taskRepository.findAllByOwner(user).stream().map(TaskMapper::toDto).toList();
-    }
-
-    public List<TaskEntity> getUserTasks(long id) {
-        return taskRepository.findAllByOwner_Id(id);
-    }
-
-    public List<TaskEntity> getAllTasks() {
-        return taskRepository.findAll();
     }
 
 
@@ -62,15 +57,11 @@ public class TaskService {
         return TaskMapper.toDto(taskRepository.findByIdAndOwner(id, user).orElseThrow(TaskNotFoundException::new));
     }
 
-    public TaskEntity getTaskById(Long id) {
-        return taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
-    }
-
 
     public List<TaskResponse> getTaskByStatus(UserEntity user, String status) {
-        System.out.println("status: " + status);
+        status = status.toUpperCase();
         if (!Objects.equals(status, "PENDING") && !Objects.equals(status, "COMPLETED")) {
-            throw new RuntimeException("Invalid status");
+            throw new BadRequestException("Invalid STATUS value");
         }
         return taskRepository.findAllByOwnerAndStatus(user, Status.valueOf(status)).stream().map(TaskMapper::toDto).toList();
     }
@@ -92,21 +83,40 @@ public class TaskService {
     }
 
 
-    public TaskResponse updateTask(Long id, TaskResponse taskResponse, UserEntity user) {
+    public TaskResponse updateTask(Long id, TaskRequest taskRequest, UserEntity user) {
         TaskEntity t = taskRepository.findByIdAndOwner(id, user).orElseThrow(TaskNotFoundException::new);
 
-        t.setTitle(taskResponse.getTitle());
-        t.setDescription(taskResponse.getDescription());
-        t.setDueDate(taskResponse.getDueDate());
+        t.setTitle(taskRequest.getTitle());
+        t.setDescription(taskRequest.getDescription());
+        t.setDueDate(taskRequest.getDate());
+        t.setStatus(taskRequest.getStatus());
 
         return TaskMapper.toDto(taskRepository.save(t));
     }
 
 
-    public TaskResponse deleteTask(long id) {
-        TaskEntity t = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+    public TaskResponse deleteTask(long id, UserEntity user) {
+        TaskEntity t = taskRepository.findByIdAndOwner(id, user).orElseThrow(TaskNotFoundException::new);
         taskRepository.deleteById(id);
         return TaskMapper.toDto(t);
     }
 
+    /*
+     * The methods below are used by the Admin Controller only
+     */
+
+
+    public List<TaskEntity> getUserTasks(long id) {
+        return taskRepository.findAllByOwner_Id(id);
+    }
+
+
+    public TaskEntity getTaskById(Long id) {
+        return taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+    }
+
+
+    public List<TaskEntity> getAllTasks() {
+        return taskRepository.findAll();
+    }
 }

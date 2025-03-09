@@ -54,20 +54,17 @@ public class UserService {
     }
 
 
-    public UserResponse getUserById(long id) {
-        return UserMapper.toUserResponse(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
+    public UserEntity getUserById(long id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
 
-    public List<UserResponse> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
         if (userRepository.findAll().isEmpty()) {
             throw new RuntimeException("No users found");
         }
 
-        return userRepository.findAll()
-                .stream()
-                .map(UserMapper::toUserResponse).
-                toList();
+        return userRepository.findAll();
     }
 
 
