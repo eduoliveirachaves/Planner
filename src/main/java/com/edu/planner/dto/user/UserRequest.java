@@ -44,11 +44,6 @@ public class UserRequest {
 
     private Gender gender;
 
-    public UserRequest(String name, String email) {
-        this.name = name;
-        this.email = email;
-        this.role = Role.USER;
-    }
 
     public UserRequest(String name, String email, String password) {
         this.name = name;

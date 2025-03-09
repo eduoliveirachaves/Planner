@@ -23,6 +23,15 @@ import java.util.List;
 @EnableMethodSecurity()
 public class SecurityConfig {
 
+    private static final String[] PUBLIC_ROUTES = {
+            "/api/auth/login",
+            "/api/user/register",
+            "/v3/api-docs/**",
+            "/api/swagger-ui/**",
+            "/api/swagger-ui.html",
+            "/api/docs/**"
+    };
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
@@ -41,7 +50,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 //Authorize HTTP requests - Set public routes, admin routes, and protect other endpoints - uses requestMatchers
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/user/register").permitAll() // Public routes
+                        .requestMatchers(PUBLIC_ROUTES).permitAll() // Public routes
                         .requestMatchers("/user/admin/**").hasRole("ADMIN") // Admin routes
                         .anyRequest().authenticated() // Protect other endpoints
                 )
@@ -72,5 +81,9 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    public static String[] getPublicRoutes() {
+        return PUBLIC_ROUTES;
     }
 }

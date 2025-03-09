@@ -2,6 +2,7 @@ package com.edu.planner.middlewares;
 
 import com.edu.planner.auth.CustomUserDetailsService;
 import com.edu.planner.auth.JwtService;
+import com.edu.planner.config.SecurityConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -37,8 +38,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
+        // Bypass authentication for public routes
+        String requestPath = request.getServletPath();
+
+        String[] publicRoutes = SecurityConfig.getPublicRoutes();
+
+        for (String route : publicRoutes) {
+            if (route.equals(requestPath)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
         // Get token from the request header
         String token = getTokenFromCookies(request);
+
 
         if (StringUtils.hasText(token) && jwtService.validateToken(token)) {
             Long id = jwtService.extractUserId(token);

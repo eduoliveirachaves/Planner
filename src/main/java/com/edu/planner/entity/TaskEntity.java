@@ -72,11 +72,11 @@ public class TaskEntity {
     }
 
 
-    public TaskEntity(String title, String description, LocalDate dueDate, UserEntity owner) {
+    public TaskEntity(String title, String description, LocalDate dueDate, UserEntity user) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
-        this.owner = owner;
+        this.owner = user;
     }
 
     @Override

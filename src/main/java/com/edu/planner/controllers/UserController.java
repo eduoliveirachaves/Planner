@@ -49,8 +49,8 @@ public class UserController {
     @Operation(summary = "Get user profile", description = "Retrieves the profile of the current user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User Found",
-            content = @Content(mediaType = "applicaiton/json",
-            schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "applicaiton/json",
+                            schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/profile")

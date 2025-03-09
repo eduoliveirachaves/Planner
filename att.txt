@@ -44,3 +44,5 @@ meta/expecativa = opcional (como horas ou quantidade)
 
             *Task*
 
+PROBLEMS :
+*** DONT FORGET OWNER IN TASK == NULL / db async / correct
