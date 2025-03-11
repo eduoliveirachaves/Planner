@@ -19,55 +19,73 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
-
+    
     private final TaskService taskService;
-
-
-    public TaskController(TaskService taskService) {
+    
+    
+    public TaskController (TaskService taskService) {
         this.taskService = taskService;
     }
-
-
+    
+    
     @GetMapping("{id}")
-    public ResponseEntity<Response> getTask(@PathVariable Long id, @CurrentUser UserEntity user) {
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("TaskResponse Found", taskService.getTaskById(id, user)));
+    public ResponseEntity<Response> getTask (@PathVariable Long id, @CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("TaskResponse Found", taskService.getTaskById(id, user)));
     }
-
-
+    
+    
     @GetMapping
-    public ResponseEntity<Response> getUserTasks(@CurrentUser UserEntity user) {
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("All tasks", taskService.getUserTasks(user)));
+    public ResponseEntity<Response> getUserTasks (@CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("All tasks", taskService.getUserTasks(user)));
     }
-
-
-    @PostMapping()
-    public ResponseEntity<Response> createTask(@RequestBody TaskRequest task, @CurrentUser UserEntity user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new Response("Task created", taskService.createTask(task, user)));
-    }
-
-
-    @PutMapping("{id}")
-    public ResponseEntity<Response> updateTask(@PathVariable Long id, @RequestBody TaskRequest taskRequest, @CurrentUser UserEntity user) {
-        /// here make sure to return the updated taskResponse
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("Task updated", taskService.updateTask(id, taskRequest, user)));
-    }
-
-
+    
+    
     @GetMapping("/status")
-    public ResponseEntity<Response> TasksByStatus(@RequestParam(name = "status") String status, @CurrentUser UserEntity user) {
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("Task with status " + status + " found", taskService.getTaskByStatus(user, status)));
+    public ResponseEntity<Response> TasksByStatus (@RequestParam(name = "status") String status,
+                                                   @CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("Task with status " + status + " found",
+                                                taskService.getTaskByStatus(user, status)));
     }
-
-
+    
+    
+    @PostMapping()
+    public ResponseEntity<Response> createTask (@RequestBody TaskRequest task, @CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(new Response("Task created", taskService.createTask(task, user)));
+    }
+    
+    
+    @PutMapping("{id}")
+    public ResponseEntity<Response> updateTask (@PathVariable Long id, @RequestBody TaskRequest taskRequest,
+                                                @CurrentUser UserEntity user) {
+        /// here make sure to return the updated taskResponse
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("Task updated", taskService.updateTask(id, taskRequest, user)));
+    }
+    
+    
+    @PatchMapping("{id}")
+    public ResponseEntity<Response> updateFields (@PathVariable Long id, @RequestBody TaskRequest taskRequest,
+                                                  @CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("Task updated", taskService.updateTask(id, taskRequest, user)));
+    }
+    
+    
     @PutMapping("{id}/status")
-    public ResponseEntity<Response> updateTaskStatus(@PathVariable Long id, @CurrentUser UserEntity user) {
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("Task updated", taskService.updateTaskStatus(id, user)));
+    public ResponseEntity<Response> updateTaskStatus (@PathVariable Long id, @CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("Task updated", taskService.updateTaskStatus(id, user)));
     }
-
-
+    
+    
     @DeleteMapping("{id}")
-    public ResponseEntity<Response> deleteTask(@PathVariable Long id, @CurrentUser UserEntity user) {
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("Task deleted", taskService.deleteTask(id, user)));
+    public ResponseEntity<Response> deleteTask (@PathVariable Long id, @CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("Task deleted", taskService.deleteTask(id, user)));
     }
-
+    
 }

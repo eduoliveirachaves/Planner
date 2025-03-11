@@ -12,10 +12,11 @@ public class TaskMapper {
     public static TaskEntity toEntity(TaskRequest task, UserEntity user) {
         try {
             TaskEntity taskEntity = new TaskEntity();
+
+
             taskEntity.setOwner(user);
-            taskEntity.setTitle(task.getTitle());
-            taskEntity.setDescription(task.getDescription());
-            taskEntity.setDueDate(task.getDate());
+            taskEntity.setTitle(task.title());
+            taskEntity.setDescription(task.description());
             return taskEntity;
         } catch (Exception err) {
             log.error("e: ", err);
@@ -24,10 +25,8 @@ public class TaskMapper {
         }
     }
 
+
     public static TaskResponse toDto(TaskEntity taskEntity) {
-        TaskResponse taskResponse = new TaskResponse(taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getDueDate());
-        taskResponse.setStatus(taskEntity.getStatus());
-        taskResponse.setOwner(taskEntity.getOwner().getName());
-        return taskResponse;
+        return new TaskResponse(taskEntity.getId(), taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getDueDate(), taskEntity.getStatus());
     }
 }
