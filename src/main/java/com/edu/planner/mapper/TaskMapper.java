@@ -3,30 +3,43 @@ package com.edu.planner.mapper;
 import com.edu.planner.dto.task.TaskRequest;
 import com.edu.planner.dto.task.TaskResponse;
 import com.edu.planner.entity.TaskEntity;
+import com.edu.planner.entity.TaskRepetition;
 import com.edu.planner.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Slf4j
 public class TaskMapper {
-
-    public static TaskEntity toEntity(TaskRequest task, UserEntity user) {
+    
+    public static TaskEntity toEntity (TaskRequest request, UserEntity user) {
+        TaskEntity entity = new TaskEntity();
+        
         try {
-            TaskEntity taskEntity = new TaskEntity();
-
-
-            taskEntity.setOwner(user);
-            taskEntity.setTitle(task.title());
-            taskEntity.setDescription(task.description());
-            return taskEntity;
+            
+            entity.setOwner(user);
+            entity.setTitle(request.title());
+            entity.setDescription(request.description());
+            
+            entity.setStatus(request.status());
+            
+            entity.setDueDate(request.dueDate());
+            entity.setCategory(request.category());
+            
+            
         } catch (Exception err) {
             log.error("e: ", err);
-
-            return null;
         }
+        
+        return entity;
     }
-
-
-    public static TaskResponse toDto(TaskEntity taskEntity) {
-        return new TaskResponse(taskEntity.getId(), taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getDueDate(), taskEntity.getStatus());
+    
+    public static TaskResponse toDto (TaskEntity entity) {
+        return new TaskResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getDueDate(),
+                                entity.getStatus(), null);
+    }
+    
+    public static TaskResponse toDto (TaskEntity entity, List<TaskRepetition> repetition) {
+        return new TaskResponse(entity.getId(), entity.getTitle(), null, null, null, repetition);
     }
 }

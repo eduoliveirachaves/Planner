@@ -4,13 +4,15 @@ import com.edu.planner.entity.TaskEntity;
 import com.edu.planner.entity.UserEntity;
 import com.edu.planner.utils.Enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TaskRepository extends JpaRepository<TaskEntity, String> {
+public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
-    Optional<TaskEntity> findById(Long id);
+    @NonNull
+    Optional<TaskEntity> findById(@NonNull Long id);
 
     Optional<TaskEntity> findByIdAndOwner(Long id, UserEntity user);
 
