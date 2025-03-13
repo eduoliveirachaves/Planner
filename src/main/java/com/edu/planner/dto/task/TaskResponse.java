@@ -1,6 +1,5 @@
 package com.edu.planner.dto.task;
 
-import com.edu.planner.entity.TaskRepetition;
 import com.edu.planner.utils.Enums.Status;
 
 import java.time.LocalDate;
@@ -18,6 +17,6 @@ public record TaskResponse(
         String description,
         LocalDate dueDate,
         Status status,
-        List<TaskRepetition> frequency) {
+        List<TaskFrequencyDto> frequency) {
     
 }

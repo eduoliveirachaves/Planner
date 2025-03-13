@@ -40,6 +40,12 @@ public class TaskController {
                              .body(new Response("All tasks", taskService.getUserTasks(user)));
     }
     
+    @GetMapping("/f")
+    public ResponseEntity<Response> get (@CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("All tasks", taskService.getUserTasksRepetitions(user)));
+    }
+    
     @GetMapping("/status")
     public ResponseEntity<Response> TasksByStatus (@RequestParam(name = "status") String status,
                                                    @CurrentUser UserEntity user) {

@@ -3,6 +3,7 @@ package com.edu.planner.services;
 import com.edu.planner.dto.task.TaskRequest;
 import com.edu.planner.dto.task.TaskResponse;
 import com.edu.planner.entity.TaskEntity;
+import com.edu.planner.entity.TaskRepetition;
 import com.edu.planner.entity.UserEntity;
 import com.edu.planner.exceptions.BadRequestException;
 import com.edu.planner.exceptions.TaskNotFoundException;
@@ -13,6 +14,7 @@ import com.edu.planner.utils.Enums.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,12 +42,28 @@ public class TaskService {
     public TaskResponse createTask (TaskRequest task, UserEntity user) {
         log.info("Creating a task: {}", task);
         
-        if (task.title() == null || task.dueDate() == null) {
-            throw new BadRequestException("Title and Date are required");
+        if (task.title() == null) {
+            throw new BadRequestException("Title are required");
         }
         
         TaskEntity taskEntity = TaskMapper.toEntity(task, user);
+        
+        
         taskRepository.save(taskEntity);
+        
+        if (task.repeat()) {
+            List<TaskRepetition> repetitions = task.repetition()
+                                                   .stream()
+                                                   .map(t -> TaskMapper.toTaskRepetition(t, taskEntity))
+                                                   .toList();
+            taskRepetitionRepository.saveAll(repetitions);
+        } else {
+            System.out.println("Task does not repeat");
+            if (task.dueDate() == null) {
+                throw new BadRequestException("Due date is required");
+            }
+        }
+        
         return TaskMapper.toDto(taskEntity);
     }
     
@@ -56,7 +74,18 @@ public class TaskService {
                              .map(TaskMapper::toDto)
                              .toList();
     }
-
+    
+    public List<TaskResponse> getUserTasksRepetitions (UserEntity user) {
+        List<TaskEntity> tasks = taskRepository.findAllByOwner(user);
+        List<TaskResponse> taskResponses = new ArrayList<>();
+        
+        for (TaskEntity task : tasks) {
+            taskResponses.add(TaskMapper.toDto(task, taskRepetitionRepository.findTaskRepetitionByTask(task)));
+        }
+        
+        return taskResponses;
+        
+    }
     
     public TaskResponse getTaskById (Long id, UserEntity user) {
         return TaskMapper.toDto(taskRepository.findByIdAndOwner(id, user)

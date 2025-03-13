@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record TaskRequest(
@@ -17,6 +18,7 @@ public record TaskRequest(
         String type,
         Integer objective,
         boolean repeat,
-        String category
+        String category,
+        List<TaskFrequencyDto> repetition
 
 ) {}

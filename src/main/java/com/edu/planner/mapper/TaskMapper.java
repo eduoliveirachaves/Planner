@@ -1,5 +1,6 @@
 package com.edu.planner.mapper;
 
+import com.edu.planner.dto.task.TaskFrequencyDto;
 import com.edu.planner.dto.task.TaskRequest;
 import com.edu.planner.dto.task.TaskResponse;
 import com.edu.planner.entity.TaskEntity;
@@ -40,6 +41,23 @@ public class TaskMapper {
     }
     
     public static TaskResponse toDto (TaskEntity entity, List<TaskRepetition> repetition) {
-        return new TaskResponse(entity.getId(), entity.getTitle(), null, null, null, repetition);
+        List<TaskFrequencyDto> responseList = repetition.stream()
+                                                      .map(r -> new TaskFrequencyDto(r.getDay(), r.getStartTime(), r.getEndTime()))
+                                                      .toList();
+        return new TaskResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getDueDate(), entity.getStatus(), responseList);
+    }
+    
+    public static TaskRepetition toTaskRepetition (TaskFrequencyDto taskSchedule, TaskEntity task) {
+        TaskRepetition taskRepetition = new TaskRepetition();
+        try {
+            taskRepetition.setTask(task);
+            taskRepetition.setDay(taskSchedule.day());
+            taskRepetition.setStartTime(taskSchedule.startTime());
+            taskRepetition.setEndTime(taskSchedule.endTime());
+        } catch (Exception err) {
+            log.error("e: ", err);
+        }
+        
+        return taskRepetition;
     }
 }
