@@ -3,7 +3,7 @@ package com.edu.planner.utils;
 /**
  * This class is used to create enums.
  * It contains the Status, Role and Gender enums.
- * Used by: UserEntity (Role, Gender) , TaskEntity (Status).
+ * Used by: UserEntity (Role, Gender) , Task (Status).
  */
 
 public class Enums {
@@ -25,5 +25,9 @@ public class Enums {
     
     public enum WeekDay {
         MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRYDAY, SATURDAY, SUNDAY
+    }
+    
+    public enum Frequency {
+        DAILY, WEEKLY, MONTHLY
     }
 }

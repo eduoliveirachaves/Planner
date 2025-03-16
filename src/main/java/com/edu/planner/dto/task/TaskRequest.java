@@ -11,14 +11,12 @@ import java.util.List;
 public record TaskRequest(
         String title,
         String description,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate startDate,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate dueDate,
         Enums.Status status,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate startDate,
         Integer priority,
-        String type,
-        Integer objective,
-        boolean repeat,
         String category,
-        List<TaskFrequencyDto> repetition
-
+        String objective,
+        List<TaskScheduleDto> frequency
+        
 ) {}

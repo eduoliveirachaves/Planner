@@ -17,6 +17,6 @@ public record TaskResponse(
         String description,
         LocalDate dueDate,
         Status status,
-        List<TaskFrequencyDto> frequency) {
+        List<TaskScheduleDto> frequency) {
     
 }

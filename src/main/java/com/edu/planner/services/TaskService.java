@@ -2,14 +2,15 @@ package com.edu.planner.services;
 
 import com.edu.planner.dto.task.TaskRequest;
 import com.edu.planner.dto.task.TaskResponse;
-import com.edu.planner.entity.TaskEntity;
-import com.edu.planner.entity.TaskRepetition;
+import com.edu.planner.entity.Task;
+import com.edu.planner.entity.TaskSchedule;
 import com.edu.planner.entity.UserEntity;
 import com.edu.planner.exceptions.BadRequestException;
 import com.edu.planner.exceptions.TaskNotFoundException;
+import com.edu.planner.factory.TaskFactory;
 import com.edu.planner.mapper.TaskMapper;
-import com.edu.planner.repositories.TaskRepetitionRepository;
 import com.edu.planner.repositories.TaskRepository;
+import com.edu.planner.repositories.TaskScheduleRepository;
 import com.edu.planner.utils.Enums.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,40 +32,24 @@ public class TaskService {
     
     private final TaskRepository taskRepository;
     
-    private final TaskRepetitionRepository taskRepetitionRepository;
+    private final TaskScheduleRepository taskScheduleRepository;
     
-    public TaskService (TaskRepository taskRepository, TaskRepetitionRepository taskRepetitionRepository) {
+    public TaskService (TaskRepository taskRepository, TaskScheduleRepository taskScheduleRepository) {
         this.taskRepository = taskRepository;
-        this.taskRepetitionRepository = taskRepetitionRepository;
+        this.taskScheduleRepository = taskScheduleRepository;
     }
     
     // Create a new task
     public TaskResponse createTask (TaskRequest task, UserEntity user) {
         log.info("Creating a task: {}", task);
         
-        if (task.title() == null) {
-            throw new BadRequestException("Title are required");
-        }
-        
-        TaskEntity taskEntity = TaskMapper.toEntity(task, user);
-        
+        Task taskEntity = TaskFactory.createTask(task, user, taskScheduleRepository, taskRepository);
         
         taskRepository.save(taskEntity);
         
-        if (task.repeat()) {
-            List<TaskRepetition> repetitions = task.repetition()
-                                                   .stream()
-                                                   .map(t -> TaskMapper.toTaskRepetition(t, taskEntity))
-                                                   .toList();
-            taskRepetitionRepository.saveAll(repetitions);
-        } else {
-            System.out.println("Task does not repeat");
-            if (task.dueDate() == null) {
-                throw new BadRequestException("Due date is required");
-            }
-        }
+        List<TaskSchedule> taskSchedules = taskScheduleRepository.findTaskRepetitionByTask(taskEntity);
         
-        return TaskMapper.toDto(taskEntity);
+        return TaskMapper.toDto(taskEntity, taskSchedules);
     }
     
     public List<TaskResponse> getUserTasks (UserEntity user) {
@@ -76,11 +61,11 @@ public class TaskService {
     }
     
     public List<TaskResponse> getUserTasksRepetitions (UserEntity user) {
-        List<TaskEntity> tasks = taskRepository.findAllByOwner(user);
+        List<Task> tasks = taskRepository.findAllByOwner(user);
         List<TaskResponse> taskResponses = new ArrayList<>();
         
-        for (TaskEntity task : tasks) {
-            taskResponses.add(TaskMapper.toDto(task, taskRepetitionRepository.findTaskRepetitionByTask(task)));
+        for (Task task : tasks) {
+            taskResponses.add(TaskMapper.toDto(task, taskScheduleRepository.findTaskRepetitionByTask(task)));
         }
         
         return taskResponses;
@@ -105,35 +90,35 @@ public class TaskService {
     
     //change taskStatus
     public TaskResponse updateTaskStatus (Long id, UserEntity user) {
-        TaskEntity taskEntity = taskRepository.findByIdAndOwner(id, user)
-                                              .orElseThrow(TaskNotFoundException::new);
+        Task task = taskRepository.findByIdAndOwner(id, user)
+                                  .orElseThrow(TaskNotFoundException::new);
         
-        if (taskEntity.getStatus()
-                      .equals(Status.PENDING)) {
-            taskEntity.setStatus(Status.COMPLETED);
+        if (task.getStatus()
+                .equals(Status.PENDING)) {
+            task.setStatus(Status.COMPLETED);
         } else {
-            taskEntity.setStatus(Status.PENDING);
+            task.setStatus(Status.PENDING);
         }
         
-        return TaskMapper.toDto(taskRepository.save(taskEntity));
+        return TaskMapper.toDto(taskRepository.save(task));
     }
     
     //used for update the full task
     public TaskResponse updateTask (Long id, TaskRequest taskRequest, UserEntity user) {
-        TaskEntity taskEntity = taskRepository.findByIdAndOwner(id, user)
-                                              .orElseThrow(TaskNotFoundException::new);
+        Task task = taskRepository.findByIdAndOwner(id, user)
+                                  .orElseThrow(TaskNotFoundException::new);
         
-        taskEntity.setTitle(taskRequest.title());
-        taskEntity.setDescription(taskRequest.description());
-        taskEntity.setDueDate(taskRequest.dueDate());
-        taskEntity.setStatus(taskRequest.status());
+        task.setTitle(taskRequest.title());
+        task.setDescription(taskRequest.description());
+        task.setDueDate(taskRequest.dueDate());
+        task.setStatus(taskRequest.status());
         
-        return TaskMapper.toDto(taskRepository.save(taskEntity));
+        return TaskMapper.toDto(taskRepository.save(task));
     }
     
     public TaskResponse deleteTask (long id, UserEntity user) {
-        TaskEntity t = taskRepository.findByIdAndOwner(id, user)
-                                     .orElseThrow(TaskNotFoundException::new);
+        Task t = taskRepository.findByIdAndOwner(id, user)
+                               .orElseThrow(TaskNotFoundException::new);
         taskRepository.deleteById(id);
         return TaskMapper.toDto(t);
     }
@@ -142,16 +127,16 @@ public class TaskService {
      * The methods below are used by the Admin Controller only
      */
     
-    public List<TaskEntity> getUserTasks (long id) {
+    public List<Task> getUserTasks (long id) {
         return taskRepository.findAllByOwner_Id(id);
     }
     
-    public TaskEntity getTaskById (Long id) {
+    public Task getTaskById (Long id) {
         return taskRepository.findById(id)
                              .orElseThrow(TaskNotFoundException::new);
     }
     
-    public List<TaskEntity> getAllTasks () {
+    public List<Task> getAllTasks () {
         return taskRepository.findAll();
     }
 }

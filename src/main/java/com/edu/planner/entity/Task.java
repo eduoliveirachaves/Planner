@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "tasks")
-public class TaskEntity {
+public class Task {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,7 @@ public class TaskEntity {
     @Column(length = 500)
     private String description;
     
+    //if the user send
     @Column(name = "start_date")
     private LocalDate startDate;
     
@@ -48,12 +49,9 @@ public class TaskEntity {
     
     private String category;
     
-    private boolean repeat;
-    
     //only if repeats??? like 2l (water) or 20 min or 20 km ?
     //dont know yet
-    private Integer objective;
-    
+    private String objective;
     
     
     @Column(name = "created_at")
@@ -64,17 +62,29 @@ public class TaskEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     
-    public TaskEntity () {
+    public Task () {
     }
     
-    public TaskEntity (String title, String description, LocalDate dueDate, UserEntity user) {
+    public Task (String title, String description, LocalDate dueDate, UserEntity user) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.owner = user;
     }
     
-    public void setTitle(String title) {
+    public Task(String title, String description, LocalDate startDate, LocalDate dueDate, Status status, Integer priority, String category, String objective, UserEntity owner) {
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.dueDate = dueDate;
+        this.status = status;
+        this.priority = priority;
+        this.category = category;
+        this.objective = objective;
+        this.owner = owner;
+    }
+    
+    public void setTitle (String title) {
         if (title != null) {
             this.title = title;
         }
@@ -110,18 +120,14 @@ public class TaskEntity {
         }
     }
     
-    public void setRepeat (boolean repeat) {
-        this.repeat = repeat;
-    }
-    
-    public void setObjective (Integer objective) {
+    public void setObjective (String objective) {
         if (objective != null) {
             this.objective = objective;
         }
     }
     
     public void setOwner (UserEntity owner) {
-            this.owner = owner;
+        this.owner = owner;
     }
     
     public void setStartDate (LocalDate startDate) {
@@ -130,10 +136,8 @@ public class TaskEntity {
         }
     }
     
-    
-    
     @Override
     public String toString () {
-        return "TaskEntity{" + "id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' + ", startDate=" + startDate + ", dueDate=" + dueDate + ", status=" + status + ", priority=" + priority + ", category='" + category + '\'' + ", repeat='" + repeat + '\'' + ", score=" + objective + ", owner=" + owner + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+        return "Task{" + "id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' + ", startDate=" + startDate + ", dueDate=" + dueDate + ", status=" + status + ", priority=" + priority + ", category='" + category + '\'' + ", score=" + objective + ", owner=" + owner + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
     }
 }
