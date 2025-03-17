@@ -12,7 +12,8 @@ import java.util.List;
 /**
  * TaskDaySchedule class.
  * This class is used to manage task repetitions.
- * It provides methods to create, update, delete, and retrieve task repetitions.
+ * They work as a schedule for the task.
+ * Ideally, a task should have a schedule for each day of the week or a maximum of 7 schedules.
  */
 
 @Getter

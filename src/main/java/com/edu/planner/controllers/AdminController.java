@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * This class is for all routes that admin can acess
+ * Methods: getAllUsers, getUser, deleteUser, allTasks, getUserTasks, getTask, debugAuth.
  */
 
 

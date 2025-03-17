@@ -17,6 +17,7 @@ import lombok.Setter;
  * It contains the user's first name, last name, email and password.
  * It is used in the UserController to create or build (update) a user.
  */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

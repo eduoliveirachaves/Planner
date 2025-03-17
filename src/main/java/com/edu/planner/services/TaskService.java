@@ -79,12 +79,16 @@ public class TaskService {
     }
     
     // Create a new task
+    // Uses the TaskFactory to create a new task
     public TaskResponse createTask (TaskRequest task, UserEntity user) {
         Task taskEntity = TaskFactory.createTask(task, user, taskDayScheduleRepository, taskRepository);
         
         return this.toDto(taskEntity);
     }
     
+    // Create a new schedule for a existing task
+    // If the task does not exist, return an error message
+    // If the task already has a schedule, return an error message
     public TaskResponse createTaskSchedule (Long id, List<TaskDayScheduleDto> schedules, UserEntity user) {
         Task task = taskRepository.findByIdAndOwner(id, user)
                                   .orElseThrow(TaskNotFoundException::new);
@@ -100,6 +104,8 @@ public class TaskService {
         return this.toDto(taskRepository.save(task));
     }
     
+    // Update the status of a task
+    // If the task does not exist, return an error message
     public TaskResponse updateTaskStatus (Long id, UserEntity user) {
         Task task = taskRepository.findByIdAndOwner(id, user)
                                   .orElseThrow(TaskNotFoundException::new);

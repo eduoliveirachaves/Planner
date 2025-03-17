@@ -14,12 +14,23 @@ import com.edu.planner.repositories.TaskDayScheduleRepository;
 import com.edu.planner.utils.Enums.TaskType;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * TaskFactory class.
+ * This class is used to create a task.
+ * It provides a method to create a task.
+ */
+
+
 @Slf4j
 public class TaskFactory {
     
     public TaskFactory () {
     }
     
+    // Tasks need to have a title and a type
+    // One time tasks need to have a due date
+    // Repeating tasks need to have a schedule
+    // All the other fields are optional
     public static Task createTask (TaskRequest req, UserEntity user, TaskDayScheduleRepository taskDayScheduleRepository,
                                    TaskRepository taskRepository) {
         
@@ -70,5 +81,4 @@ public class TaskFactory {
         }
         return task;
     }
-    
 }

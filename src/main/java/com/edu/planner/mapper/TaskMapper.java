@@ -12,6 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+/**
+ * TaskMapper class.
+ * This class is used to map task objects.
+ * It provides methods to map task objects to task dto objects and vice versa.
+ */
+
 @Slf4j
 public class TaskMapper {
     

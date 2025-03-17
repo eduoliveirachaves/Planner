@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
  * UserResponse class.
  * This class is used to create a user response.
  * It contains the user's first name, last name, email, createdAt and updatedAt.
+ * It is used in the UserController to return a user.
+ * TO BE REFACTORED TO RECORD
  */
 
 
@@ -36,5 +38,15 @@ public class UserResponse {
         this.email = email;
         this.createdAt = createdAt.format(FORMATTER);
         this.updatedAt = updatedAt.format(FORMATTER);
+    }
+    
+    @Override
+    public String toString() {
+        return "UserResponse{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
     }
 }

@@ -36,6 +36,7 @@ public class GlobalExceptionHandler {
     }
 
 
+    // This method handles UserNotFoundException exceptions.
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Response> handleUserNotFound(UserNotFoundException e) {
         logger.error("User not found: {}", e.getMessage(), e);
@@ -44,6 +45,7 @@ public class GlobalExceptionHandler {
     }
 
 
+    // This method handles TaskNotFoundException exceptions.
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<Response> handleTaskNotFound(TaskNotFoundException e) {
         logger.error("Task not found: {}", e.getMessage(), e);
@@ -51,7 +53,7 @@ public class GlobalExceptionHandler {
                 .body(new Response(e.getMessage()));
     }
 
-
+    // This method handles NoResourceFoundException exceptions.
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Response> handleNoResourceFoundException(NoResourceFoundException e) {
         logger.error("No Resource found: {}", e.getMessage(), e);
@@ -59,7 +61,7 @@ public class GlobalExceptionHandler {
                 .body(new Response("This route doesn't exists: " + e.getMessage()));
     }
 
-
+    // This method handles BadRequestException exceptions.
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Response> handleBadRequestException(BadRequestException e) {
         logger.error("Bad Request: {}", e.getMessage(), e);

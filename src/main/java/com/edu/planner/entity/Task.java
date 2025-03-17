@@ -14,6 +14,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+/**
+ * Task class.
+ * This class is used as an entity.
+ * A task is an activity that a user needs to do.
+ * It has a title, a description, a start date, a due date, a status, a priority, a category, a score, and an owner.
+ * The task can be of different types, such as one-time, repeating, or a goal(TO BE IMPLEMENTED).
+ * The task can have a schedule for each day of the week or a maximum of 7 schedules.
+ */
+
 @Getter
 @AllArgsConstructor
 @Entity

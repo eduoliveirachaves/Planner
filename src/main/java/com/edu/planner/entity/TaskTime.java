@@ -7,6 +7,13 @@ import lombok.Setter;
 import java.time.LocalTime;
 import java.util.Optional;
 
+/**
+ * TaskTime class.
+ * This class is an entity of the time of a task.
+ * They are linked to a TaskDaySchedule entity representing the day of the week.
+ * A task time has a start time and an optional end time.
+ */
+
 @Getter
 @Setter
 @Entity
@@ -51,6 +58,15 @@ public class TaskTime {
     
     public void setStartTime (LocalTime startTime) {
         this.startTime = startTime;
+    }
+    
+    @Override
+    public String toString () {
+        return "TaskTime{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
     }
     
     
