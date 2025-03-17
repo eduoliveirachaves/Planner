@@ -4,6 +4,7 @@ import com.edu.planner.annotations.CurrentUser;
 import com.edu.planner.dto.task.TaskRequest;
 import com.edu.planner.entity.UserEntity;
 import com.edu.planner.services.TaskService;
+import com.edu.planner.utils.Enums.Status;
 import com.edu.planner.utils.Response;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -40,14 +41,9 @@ public class TaskController {
                              .body(new Response("All tasks", taskService.getUserTasks(user)));
     }
     
-    @GetMapping("/f")
-    public ResponseEntity<Response> get (@CurrentUser UserEntity user) {
-        return ResponseEntity.status(HttpStatus.OK)
-                             .body(new Response("All tasks", taskService.getUserTasksRepetitions(user)));
-    }
     
     @GetMapping("/status")
-    public ResponseEntity<Response> TasksByStatus (@RequestParam(name = "status") String status,
+    public ResponseEntity<Response> TasksByStatus (@RequestParam(name = "status") Status status,
                                                    @CurrentUser UserEntity user) {
         return ResponseEntity.status(HttpStatus.OK)
                              .body(new Response("Task with status " + status + " found",

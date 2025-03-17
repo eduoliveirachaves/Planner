@@ -30,4 +30,8 @@ public class Enums {
     public enum Frequency {
         DAILY, WEEKLY, MONTHLY
     }
+    
+    public enum TaskType {
+        ONE_TIME, REPEATING
+    }
 }

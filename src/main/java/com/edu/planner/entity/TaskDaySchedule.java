@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TaskSchedule class.
+ * TaskDaySchedule class.
  * This class is used to manage task repetitions.
  * It provides methods to create, update, delete, and retrieve task repetitions.
  */
@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class TaskSchedule {
+public class TaskDaySchedule {
     
     @Setter(AccessLevel.NONE)
     @Id
@@ -32,24 +32,32 @@ public class TaskSchedule {
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
     
-    @OneToMany(mappedBy = "taskSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "taskDaySchedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskTime> scheduledTimes;
     
-    public TaskSchedule (Enums.WeekDay day, Task task) {
+    public TaskDaySchedule (Enums.WeekDay day, Task task) {
         this.day = day;
         this.task = task;
         this.scheduledTimes = new ArrayList<TaskTime>();
     }
     
-    public TaskSchedule () {
+    public TaskDaySchedule () {
     }
     
-    public TaskSchedule (Task task) {
+    public TaskDaySchedule (Task task) {
         this.task = task;
         this.scheduledTimes = new ArrayList<TaskTime>();
     }
     
-    
+    @Override
+    public String toString () {
+        return "TaskDaySchedule{" +
+                "id=" + id +
+                ", day=" + day +
+                ", task=" + task +
+                ", scheduledTimes=" + scheduledTimes +
+                '}';
+    }
     
     
 }

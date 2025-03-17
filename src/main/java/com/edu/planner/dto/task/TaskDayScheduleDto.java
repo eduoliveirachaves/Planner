@@ -4,7 +4,7 @@ import com.edu.planner.utils.Enums;
 
 import java.util.List;
 
-public record TaskScheduleDto(
+public record TaskDayScheduleDto(
         Enums.WeekDay day,
         List<TaskTimeDto> scheduledTimes) {}
 

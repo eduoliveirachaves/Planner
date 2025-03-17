@@ -17,16 +17,17 @@ public class TaskTime {
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "shedule_id", nullable = false)
-    private TaskSchedule taskSchedule;
+    @JoinColumn(name = "day_schedule_id", nullable = false)
+    private TaskDaySchedule taskDaySchedule;
     
+    @Column(nullable = false)
     private LocalTime startTime;
     
     //if null its because dont have a duration
     private LocalTime endTime;
     
-    public TaskTime (TaskSchedule task, LocalTime startTime, LocalTime endTime) {
-        this.taskSchedule = task;
+    public TaskTime (TaskDaySchedule task, LocalTime startTime, LocalTime endTime) {
+        this.taskDaySchedule = task;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -46,6 +47,10 @@ public class TaskTime {
     
     public Optional<LocalTime> getEndTime () {
         return Optional.ofNullable(endTime);
+    }
+    
+    public void setStartTime (LocalTime startTime) {
+        this.startTime = startTime;
     }
     
     

@@ -1,6 +1,7 @@
 package com.edu.planner.entity;
 
 import com.edu.planner.utils.Enums.Status;
+import com.edu.planner.utils.Enums.TaskType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,12 +12,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task {
+    
+    @Column(name = "start_time")
+    public LocalTime startTime;
+    
+    @Column(name = "end_time")
+    public LocalTime endTime;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +39,10 @@ public class Task {
     
     @Column(length = 500)
     private String description;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TaskType taskType;
     
     //if the user send
     @Column(name = "start_date")
@@ -53,7 +65,6 @@ public class Task {
     //dont know yet
     private String objective;
     
-    
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -65,28 +76,36 @@ public class Task {
     public Task () {
     }
     
-    public Task (String title, String description, LocalDate dueDate, UserEntity user) {
+    public Task (String title, LocalDate dueDate, UserEntity user) {
         this.title = title;
-        this.description = description;
         this.dueDate = dueDate;
         this.owner = user;
     }
     
-    public Task(String title, String description, LocalDate startDate, LocalDate dueDate, Status status, Integer priority, String category, String objective, UserEntity owner) {
+    public Task (String title, String description, LocalDate startDate, LocalDate dueDate, Status status,
+                 Integer priority, String category, String objective, TaskType type, UserEntity owner) {
+        this.status = (status == null) ? status = Status.PENDING : status;
+        this.startDate = (startDate == null) ? startDate = LocalDate.now() : startDate;
+        
         this.title = title;
         this.description = description;
-        this.startDate = startDate;
         this.dueDate = dueDate;
-        this.status = status;
         this.priority = priority;
         this.category = category;
         this.objective = objective;
+        this.taskType = type;
         this.owner = owner;
     }
     
     public void setTitle (String title) {
         if (title != null) {
             this.title = title;
+        }
+    }
+    
+    public void setTaskType (TaskType taskType) {
+        if (taskType != null) {
+            this.taskType = taskType;
         }
     }
     
