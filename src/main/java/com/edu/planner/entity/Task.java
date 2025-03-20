@@ -15,9 +15,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * Task class.
  * This class is used as an entity.
- * A task is an activity that a user needs to do.
+ * The attributes that cant be null are title, taskType, status, and owner.
  * It has a title, a description, a start date, a due date, a status, a priority, a category, a score, and an owner.
  * The task can be of different types, such as one-time, repeating, or a goal(TO BE IMPLEMENTED).
  * The task can have a schedule for each day of the week or a maximum of 7 schedules.
@@ -85,9 +84,10 @@ public class Task {
     public Task () {
     }
     
-    public Task (String title, LocalDate dueDate, UserEntity user) {
+    public Task (String title, TaskType type,UserEntity user) {
         this.title = title;
-        this.dueDate = dueDate;
+        this.taskType = type;
+        this.dueDate = LocalDate.of(2021, 12, 31);
         this.owner = user;
     }
     
