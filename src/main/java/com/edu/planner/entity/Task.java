@@ -93,8 +93,8 @@ public class Task {
     
     public Task (String title, String description, LocalDate startDate, LocalDate dueDate, Status status,
                  Integer priority, String category, String objective, TaskType type, UserEntity owner) {
-        this.status = (status == null) ? status = Status.PENDING : status;
-        this.startDate = (startDate == null) ? startDate = LocalDate.now() : startDate;
+        this.status = (status == null) ? Status.PENDING : status;
+        this.startDate = (startDate == null) ? LocalDate.now() : startDate;
         
         this.title = title;
         this.description = description;

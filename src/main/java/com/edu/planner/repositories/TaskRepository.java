@@ -2,6 +2,7 @@ package com.edu.planner.repositories;
 
 import com.edu.planner.entity.Task;
 import com.edu.planner.entity.UserEntity;
+import com.edu.planner.utils.Enums;
 import com.edu.planner.utils.Enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
@@ -25,6 +26,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findAllByOwner(UserEntity user);
 
     List<Task> findAllByOwner_Id(long id);
+    
+    List<Task> findAllByOwnerAndTaskType(UserEntity user, Enums.TaskType type);
 
     void deleteById(long id);
 

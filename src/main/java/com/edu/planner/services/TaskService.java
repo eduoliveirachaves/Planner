@@ -46,7 +46,7 @@ public class TaskService {
         List<Task> tasks = taskRepository.findAllByOwner(user);
         
         if (tasks.isEmpty()) {
-            throw new TaskNotFoundException();
+            return Collections.emptyList();
         }
         
         return tasks.stream()
@@ -62,6 +62,21 @@ public class TaskService {
                                   .orElseThrow(TaskNotFoundException::new);
         return this.toDto(task);
     }
+    
+    // Get all one-time tasks for a user
+    // If no one-time tasks are found, return an empty list
+    public List<TaskResponse> getOneTimeTasks(UserEntity user) {
+        List<Task> tasks = taskRepository.findAllByOwnerAndTaskType(user, Enums.TaskType.ONE_TIME);
+        
+        if (tasks.isEmpty()) {
+            return Collections.emptyList();
+        }
+        
+        return tasks.stream()
+                    .map(this::toDto)
+                    .toList();
+    }
+    
     
     // Get all tasks with a specific status
     // If the status is not PENDING or COMPLETED, return an error message
@@ -270,10 +285,7 @@ public class TaskService {
     // Convert Task entity to TaskResponse object
     // If the task has a schedule, return the TaskResponse object with the schedule
     private TaskResponse toDto (Task task) {
-        log.info("Task: {}", task);
         List<TaskDaySchedule> taskDaySchedules = this.getTaskSchedule(task);
-        log.info("Task schedules: {}", taskDaySchedules);
-        log.info("Task schedules size: {}", taskDaySchedules.size());
         return (taskDaySchedules.isEmpty()) ? TaskMapper.toDto(task) : TaskMapper.toDto(task, taskDaySchedules);
     }
     

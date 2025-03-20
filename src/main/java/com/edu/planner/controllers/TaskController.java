@@ -41,10 +41,16 @@ public class TaskController {
                              .body(new Response("All tasks", taskService.getUserTasks(user)));
     }
     
+    @GetMapping("/one")
+    public ResponseEntity<Response> getOneTimeTasks (@CurrentUser UserEntity user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new Response("One-time tasks", taskService.getOneTimeTasks(user)));
+    }
+    
     
     @GetMapping("/status")
-    public ResponseEntity<Response> TasksByStatus (@RequestParam(name = "status") Status status,
-                                                   @CurrentUser UserEntity user) {
+    public ResponseEntity<Response> getTasksByStatus (@RequestParam(name = "status") Status status,
+                                                      @CurrentUser UserEntity user) {
         return ResponseEntity.status(HttpStatus.OK)
                              .body(new Response("Task with status " + status + " found",
                                                 taskService.getTaskByStatus(user, status)));

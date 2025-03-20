@@ -23,7 +23,7 @@ public class TaskMapper {
     
     public static Task toEntity (TaskRequest dto, UserEntity user) {
         return new Task(dto.title(), dto.description(), dto.startDate(), dto.dueDate(), dto.status(), dto.priority(),
-                        dto.category(), dto.objective(), dto.type(),user);
+                        dto.category(), dto.objective(), dto.type(), user);
     }
     
     // Map the task schedule dto to a TaskDaySchedule entity
@@ -31,30 +31,32 @@ public class TaskMapper {
         TaskDaySchedule schedule = new TaskDaySchedule(dto.day(), task);
         
         for (TaskTimeDto time : dto.scheduledTimes()) {
-            schedule.getScheduledTimes().add(new TaskTime(schedule, time.startTime(), time.endTime()));
+            schedule.getScheduledTimes()
+                    .add(new TaskTime(schedule, time.startTime(), time.endTime()));
         }
         
         return schedule;
     }
     
     public static TaskResponse toDto (Task entity) {
-        return new TaskResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getDueDate(),
-                                entity.getStatus(), null);
+        return new TaskResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTaskType(),
+                                entity.getDueDate(), entity.getStatus(), null);
     }
     
     // Map the task entity to a TaskResponse object
     public static TaskResponse toDto (Task entity, List<TaskDaySchedule> repetition) {
         List<TaskDayScheduleDto> responseList = repetition.stream()
                                                           // Map the TaskDaySchedule entity to a TaskDayScheduleDto object
-                                                          .map(r -> new TaskDayScheduleDto(r.getDay(), r.getScheduledTimes()
-                                                                                                        .stream() // Map the TaskTime entity to a TaskTimeDto object
-                                                                                                        .map(s -> new TaskTimeDto(
-                                                                                                          s.getStartTime(),
-                                                                                                          s.getEndTime()
-                                                                                                           .orElse(null)))
-                                                                                                        .toList())) // Collect the TaskTimeDto objects into a list
+                                                          .map(r -> new TaskDayScheduleDto(r.getDay(),
+                                                                                           r.getScheduledTimes()
+                                                                                            .stream() // Map the TaskTime entity to a TaskTimeDto object
+                                                                                            .map(s -> new TaskTimeDto(
+                                                                                                    s.getStartTime(),
+                                                                                                    s.getEndTime()
+                                                                                                     .orElse(null)))
+                                                                                            .toList())) // Collect the TaskTimeDto objects into a list
                                                           .toList(); // Collect the TaskDayScheduleDto objects into a list
-        return new TaskResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getDueDate(),
+        return new TaskResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTaskType(), entity.getDueDate(),
                                 entity.getStatus(), responseList);
     }
     

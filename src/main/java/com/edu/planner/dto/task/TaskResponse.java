@@ -1,5 +1,6 @@
 package com.edu.planner.dto.task;
 
+import com.edu.planner.utils.Enums;
 import com.edu.planner.utils.Enums.Status;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -17,6 +18,7 @@ public record TaskResponse(
         Long id,
         String title,
         String description,
+        Enums.TaskType type,
         LocalDate dueDate,
         Status status,
         List<TaskDayScheduleDto> schedule) {
